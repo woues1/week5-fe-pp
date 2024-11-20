@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 const EditJobPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const apiUrl = "/api/jobs"
 
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
@@ -42,13 +43,39 @@ const EditJobPage = () => {
     fetchJob();
   }, [id]);
 
-  const submitForm = (e) => {
+
+  const submitForm = async (e) => {
     e.preventDefault();
-    console.log("EditJobPage");
+    const job = {
+      title,
+      type,
+      description,
+      company: {
+        name,
+        contactPhone,
+        contactEmail,
+      },
+      location,
+      salary,
+    }
+    const res = await fetch(`${apiUrl}/${id} `, {
+      method: "PUT",
+      body: JSON.stringify(job),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    const json = await res.json();
+    if (!res.ok) {
+      console.log(`Error: ${res.status}`);
+    }
+    if (res.ok) {
+      console.log(json)
+    }
   };
 
   const cancelEdit = () => {
-    console.log("cancelEdit");
+    navigate(-1)
   };
 
   return (

@@ -9,6 +9,20 @@ const JobPage = () => {
   const deleteJob = async () => {
     console.log(JobPage);
   };
+  useEffect(() => {
+    async function FetchJob() {
+      try {
+        const response = await fetch(`/api/jobs/${id}`);
+        const data = await response.json();
+        setJob(data)
+
+      }
+      catch (e) {
+        console.log(e)
+      }
+    }
+    FetchJob()
+  }, [id])
 
   if (!job) {
     return <div>Loading...</div>;
