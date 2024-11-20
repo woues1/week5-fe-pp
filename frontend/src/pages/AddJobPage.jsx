@@ -13,9 +13,80 @@ const AddJobPage = () => {
 
   const navigate = useNavigate();
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleTypeChange = (e) => {
+    setType(e.target.value);
+  };
+
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const handleCompanyNameChange = (e) => {
+    setCompanyName(e.target.value);
+  };
+
+  const handleContactEmailChange = (e) => {
+    setContactEmail(e.target.value);
+  };
+
+  const handleSalaryChange = (e) => {
+    setSalary(Number(e.target.value));
+  };
+
+  const handleContactPhoneChange = (e) => {
+    setContactPhone(e.target.value);
+  };
+
   const submitForm = (e) => {
     e.preventDefault();
-    console.log("AddJobPage");
+    if (!title || !type || !location || !description || !companyName || !contactEmail || !contactPhone) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
+    const newJob = {
+      title,
+      type,
+      location,
+      description,
+      company: {
+        name: companyName,
+        contactEmail: contactEmail,
+        contactPhone: contactPhone,
+      },
+      salary,
+    };
+
+    addJob(newJob);
+  };
+
+  const addJob = async (newJob) => {
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "POST",
+        body: JSON.stringify(newJob),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        navigate("/");
+        console.log("Job added successfully");
+      } else {
+        console.error("Failed to add job");
+      }
+    } catch (error) {
+      console.error("Failed to add job", error);
+    }
   };
 
   return (
@@ -27,13 +98,13 @@ const AddJobPage = () => {
           id="title"
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleTitleChange}
         />
         <label htmlFor="type">Job type:</label>
         <select
           id="type"
           value={type}
-          onChange={(e) => setType(e.target.value)}
+          onChange={handleTypeChange}
         >
           <option value="" disabled>
             Select job type
@@ -46,42 +117,42 @@ const AddJobPage = () => {
         <textarea
           id="description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleDescriptionChange}
         ></textarea>
         <label htmlFor="companyName">Company Name:</label>
         <input
           id="companyName"
           type="text"
           value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+          onChange={handleCompanyNameChange}
         />
         <label htmlFor="contactEmail">Contact Email:</label>
         <input
           id="contactEmail"
           type="email"
           value={contactEmail}
-          onChange={(e) => setContactEmail(e.target.value)}
+          onChange={handleContactEmailChange}
         />
         <label htmlFor="contactPhone">Contact Phone:</label>
         <input
           id="contactPhone"
           type="tel"
           value={contactPhone}
-          onChange={(e) => setContactPhone(e.target.value)}
+          onChange={handleContactPhoneChange}
         />
         <label htmlFor="location">Location:</label>
         <input
           id="location"
           type="text"
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={handleLocationChange}
         />
         <label htmlFor="salary">Salary:</label>
         <input
           id="salary"
-          type="text"
+          type="number"
           value={salary}
-          onChange={(e) => setSalary(e.target.value)}
+          onChange={handleSalaryChange}
         />
         <button type="submit">Add Job</button>
       </form>
